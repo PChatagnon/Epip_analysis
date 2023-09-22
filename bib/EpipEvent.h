@@ -37,7 +37,6 @@ public:
         {
                 vRestProton.SetPxPyPzE(0., 0., 0., mp);
                 vBeam.SetPxPyPzE(0., 0., ebeam, ebeam);
-                Photons = new Particle[np];
         }
 
         void Set_trigger_bit(long input_trigger_bit)
@@ -48,6 +47,12 @@ public:
         void Set_Weight(float w_in)
         {
                 weight = w_in;
+        }
+
+        void Set_nb_part(int input_np)
+        {
+                np = input_np;
+                Photons = new Particle[np];
         }
 
         void Set_Particles(hipo::bank PART)

@@ -298,7 +298,7 @@ int analysis_Epip()
 
 		reader.open(nameFiles);
 		reader.readDictionary(factory);
-		factory.show(); // might be useful to remove this
+		//factory.show(); // might be useful to remove this
 
 		hipo::bank EVENT(factory.getSchema("REC::Event"));
 		hipo::bank PART(factory.getSchema("REC::Particle"));
@@ -357,6 +357,7 @@ int analysis_Epip()
 			trigger_bit = RUN.getLong("trigger", 0);
 			int np_input = PART.getRows();
 			ev.Set_trigger_bit(trigger_bit);
+			ev.Set_nb_part(np_input);
 
 			if (IsSimu)
 			{
