@@ -7,7 +7,7 @@ class MCEvent
 public:
         // Particle and Lorentz vectors
         TLorentzVector Electron;
-        TLorentzVector Proton;
+        TLorentzVector Pion;
         TLorentzVector vBeam;
         TLorentzVector vRestProton;
 
@@ -17,7 +17,7 @@ public:
 
         // MC vertex
         float vz_elec_Gen;
-        float vz_prot_Gen;
+        float vz_pion_Gen;
 
         // MC weight
         float w;
@@ -32,15 +32,15 @@ public:
         {
 
                 Electron.SetXYZM(MCPART.getFloat("px", 0), MCPART.getFloat("py", 0), MCPART.getFloat("pz", 0), me);
-                Proton.SetXYZM(MCPART.getFloat("px", 1), MCPART.getFloat("py", 1), MCPART.getFloat("pz", 1), mp);
+                Pion.SetXYZM(MCPART.getFloat("px", 1), MCPART.getFloat("py", 1), MCPART.getFloat("pz", 1), mpion);
 
                 vz_elec_Gen = MCPART.getFloat("vz", 0);
-                vz_prot_Gen = MCPART.getFloat("vz", 1);
+                vz_pion_Gen = MCPART.getFloat("vz", 1);
         }
 
         void Get_Kinematics()
         {
-                W_Gen = (vBeam + vRestProton - Electron).M();
+                W_Gen = (vBeam + vRestProton - Electron - Pion).M();
                 Q2_Gen = (vBeam - Electron).M2();
         }
 };

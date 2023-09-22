@@ -126,13 +126,13 @@ int analysis_Epip()
 	TTree *outT = new TTree("tree", "tree");
 	TTree *outT_Gen = new TTree("tree_Gen", "tree_Gen");
 
-	TLorentzVector tree_Electron, tree_Proton;
+	TLorentzVector tree_Electron, tree_Pion;
 	outT->Branch("Electron", "TLorentzVector", &tree_Electron);
-	outT->Branch("Proton", "TLorentzVector", &tree_Proton);
+	outT->Branch("Pion", "TLorentzVector", &tree_Pion);
 
-	TLorentzVector tree_Electron_Gen, tree_Proton_Gen;
+	TLorentzVector tree_Electron_Gen, tree_Pion_Gen;
 	outT->Branch("Electron_Gen", "TLorentzVector", &tree_Electron_Gen);
-	outT->Branch("Proton_Gen", "TLorentzVector", &tree_Proton_Gen);
+	outT->Branch("Pion_Gen", "TLorentzVector", &tree_Pion_Gen);
 
 	int trigger_bit;
 	outT->Branch("trigger_bit", &trigger_bit, "trigger_bit/I");
@@ -147,14 +147,14 @@ int analysis_Epip()
 		"electron_SF",
 		"electron_score",
 		"status_elec",
-		"status_prot",
-		"chi2_proton",
+		"status_pion",
+		"chi2_pion",
 		"vx_elec",
 		"vy_elec",
 		"vz_elec",
-		"vx_prot",
-		"vy_prot",
-		"vz_prot",
+		"vx_pion",
+		"vy_pion",
+		"vz_pion",
 		"PCAL_x_elec",
 		"PCAL_y_elec",
 		"PCAL_sector_elec",
@@ -169,7 +169,7 @@ int analysis_Epip()
 		"Q2_Gen",
 		"W_Gen",
 		"vz_elec_Gen",
-		"vz_prot_Gen",
+		"vz_pion_Gen",
 
 	};
 
@@ -200,7 +200,7 @@ int analysis_Epip()
 		"Q2_Gen",
 		"W_Gen",
 		"vz_elec_Gen",
-		"vz_prot_Gen",
+		"vz_pion_Gen",
 	};
 
 	std::map<TString, Float_t> outVars_Gen;
@@ -213,7 +213,7 @@ int analysis_Epip()
 		}
 
 		outT_Gen->Branch("Electron_Gen", "TLorentzVector", &tree_Electron_Gen);
-		outT_Gen->Branch("Proton_Gen", "TLorentzVector", &tree_Proton_Gen);
+		outT_Gen->Branch("Pion_Gen", "TLorentzVector", &tree_Pion_Gen);
 	}
 	///////////////////////////////////////////
 
@@ -369,10 +369,10 @@ int analysis_Epip()
 				outVars_Gen["Q2_Gen"] = MC_ev.Q2_Gen;
 				outVars_Gen["W_Gen"] = MC_ev.W_Gen;
 				outVars_Gen["vz_elec_Gen"] = MC_ev.vz_elec_Gen;
-				outVars_Gen["vz_prot_Gen"] = MC_ev.vz_prot_Gen;
+				outVars_Gen["vz_pion_Gen"] = MC_ev.vz_pion_Gen;
 
 				tree_Electron_Gen = MC_ev.Electron;
-				tree_Proton_Gen = MC_ev.Proton;
+				tree_Pion_Gen = MC_ev.Pion;
 
 				outT_Gen->Fill();
 			}
@@ -423,8 +423,8 @@ int analysis_Epip()
 			///////////////////////////////////////////
 			// Radiative correction
 			///////////////////////////////////////////
-			ev.Apply_Radiative_Correction(InputParameters.RadCorr);
-			ev.Apply_Energy_loss(EnergyLoss);
+			ev.Apply_Radiative_Correction(true);
+			ev.Apply_Energy_loss_Electron(EnergyLoss);
 			ev.Compute_SF();
 			///////////////////////////////////////////
 
@@ -453,10 +453,10 @@ int analysis_Epip()
 				outVars["electron_SF"] = ev.electron_SF;
 				outVars["electron_score"] = ev.electron_score;
 				outVars["status_elec"] = ev.Electron.status;
-				outVars["status_prot"] = ev.Proton.status;
-				outVars["chi2_proton"] = ev.Proton.chi2;
+				outVars["status_pion"] = ev.Pion.status;
+				outVars["chi2_pion"] = ev.Pion.chi2;
 				outVars["vz_elec"] = ev.Electron.vertex.z;
-				outVars["vz_prot"] = ev.Proton.vertex.z;
+				outVars["vz_pion"] = ev.Pion.vertex.z;
 				outVars["electron_HTCC_ECAL_match"] = (ev.Electron.SectorCalo(ECAL, PCAL) == ev.Electron.SectorChe(HTCC)) ? 1. : 0.0;
 				outVars["PCAL_sector_elec"] = ev.Electron.SECTOR_CALO(PCAL);
 				outVars["PCAL_x_elec"] = ev.Electron.X_CALO(PCAL);
@@ -470,7 +470,7 @@ int analysis_Epip()
 				outVars["Q2_Gen"] = MC_ev.Q2_Gen;
 				outVars["W_Gen"] = MC_ev.W_Gen;
 				outVars["vz_elec_Gen"] = MC_ev.vz_elec_Gen;
-				outVars["vz_prot_Gen"] = MC_ev.vz_prot_Gen;
+				outVars["vz_pion_Gen"] = MC_ev.vz_pion_Gen;
 
 				if (DC_Traj_check)
 				{
@@ -492,10 +492,10 @@ int analysis_Epip()
 				}
 
 				tree_Electron = ev.Electron.Vector;
-				tree_Proton = ev.Proton.Vector;
+				tree_Pion = ev.Pion.Vector;
 
 				tree_Electron_Gen = MC_ev.Electron;
-				tree_Proton_Gen = MC_ev.Proton;
+				tree_Pion_Gen = MC_ev.Pion;
 
 				outT->Fill();
 			}

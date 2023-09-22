@@ -106,6 +106,16 @@ public:
                 Energyloss.Apply_Energy_loss_Electron(&Electron);
         }
 
+        void Apply_Radiative_Correction(bool is_apply_corr)
+        {
+                if (is_apply_corr)
+                {
+                        Electron = RadiativeCorr(Electron, Photons, 10., 1.5, np);
+                        //Positron = RadiativeCorr(Positron, Photons, 10., 1.5, np);
+                }
+        }
+
+
         bool pass_topology_cut()
         {
                 return (recem > 0);
@@ -125,7 +135,7 @@ public:
 
         bool pass_EC_cut()
         {
-                return (Electron.passEC && Proton.passEC);
+                return (Electron.passEC && Pion.passEC);
         }
 
         void Compute_SF()
