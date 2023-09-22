@@ -8,6 +8,7 @@ public:
         // Particle and Lorentz vectors
         Particle Electron;
         Particle Pion;
+        Particle *Photons;
         TLorentzVector vBeam;
         TLorentzVector vRestProton;
 
@@ -36,6 +37,7 @@ public:
         {
                 vRestProton.SetPxPyPzE(0., 0., 0., mp);
                 vBeam.SetPxPyPzE(0., 0., ebeam, ebeam);
+                Photons = new Particle[np];
         }
 
         void Set_trigger_bit(long input_trigger_bit)
@@ -69,7 +71,7 @@ public:
 
                         if (pid == 11)
                         {
-                                if (status > 2000 && recem==0)
+                                if (status > 2000 && recem == 0)
                                 {
                                         Electron.Vector.SetXYZM(px, py, pz, me);
                                         Electron.index = i;
@@ -83,6 +85,15 @@ public:
                                         Electron.vt = vt;
                                         recem++;
                                 }
+                        }
+
+                        if (pid == 22)
+                        {
+                                Photons[i].Vector.SetXYZM(px, py, pz, 0.);
+                                Photons[i].index = i;
+                                Photons[i].pid = 22;
+                                Photons[i].status = status;
+                                Photons[i].beta = beta;
                         }
 
                         if (pid == 211)
@@ -102,7 +113,8 @@ public:
                 }
         }
 
-        void Apply_Energy_loss_Electron(Energy_loss Energyloss){
+        void Apply_Energy_loss_Electron(Energy_loss Energyloss)
+        {
                 Energyloss.Apply_Energy_loss_Electron(&Electron);
         }
 
@@ -111,10 +123,9 @@ public:
                 if (is_apply_corr)
                 {
                         Electron = RadiativeCorr(Electron, Photons, 10., 1.5, np);
-                        //Positron = RadiativeCorr(Positron, Photons, 10., 1.5, np);
+                        // Positron = RadiativeCorr(Positron, Photons, 10., 1.5, np);
                 }
         }
-
 
         bool pass_topology_cut()
         {
@@ -130,7 +141,7 @@ public:
         void Associate_DC_traj(hipo::bank TRAJ)
         {
                 Electron.Associate_DC_traj_to_Particle(TRAJ);
-                //Proton.Associate_DC_traj_to_Particle(TRAJ);  
+                // Proton.Associate_DC_traj_to_Particle(TRAJ);
         }
 
         bool pass_EC_cut()
@@ -217,55 +228,52 @@ public:
 
                 Electron = Particles[0];
                 Pion = Particles[1];
-
         }
 
         void Apply_Mom_Correction(bool inbending)
         {
-                //Apply momentum corrections to electron
+                // Apply momentum corrections to electron
                 double ex = Electron.Vector.Px();
                 double ey = Electron.Vector.Py();
                 double ez = Electron.Vector.Pz();
                 int esec = Electron.SECTOR_CALO(PCAL);
                 double fe = 0.0;
-                
-                if(inbending)
+
+                if (inbending)
                         fe = MomemtumCorrection_CLAS12_inbending(ex, ey, ez, esec, 0) + 1.;
                 else
                         fe = MomemtumCorrection_CLAS12_outbending(ex, ey, ez, esec, 0) + 1.;
 
-                Electron.Vector.SetXYZM(ex*fe, ey*fe, ez*fe, me);
+                Electron.Vector.SetXYZM(ex * fe, ey * fe, ez * fe, me);
         }
-
 
         void Apply_Mom_Smearing_Electron(MCEvent MC_ev, double smearing_factor)
         {
-                //Apply momentum corrections to electron
+                // Apply momentum corrections to electron
                 double px_rec = Electron.Vector.Px();
                 double py_rec = Electron.Vector.Py();
                 double pz_rec = Electron.Vector.Pz();
-                
+
                 double px_mc = MC_ev.Electron.Px();
                 double py_mc = MC_ev.Electron.Py();
                 double pz_mc = MC_ev.Electron.Pz();
 
-                Electron.Vector.SetXYZM(px_rec+smearing_factor*(px_rec-px_mc), py_rec+smearing_factor*(py_rec-py_mc), pz_rec+smearing_factor*(pz_rec-pz_mc), me);
+                Electron.Vector.SetXYZM(px_rec + smearing_factor * (px_rec - px_mc), py_rec + smearing_factor * (py_rec - py_mc), pz_rec + smearing_factor * (pz_rec - pz_mc), me);
         }
 
         void Apply_Mom_Smearing_Pion(MCEvent MC_ev, double smearing_factor)
         {
-                //Apply momentum corrections to electron
+                // Apply momentum corrections to electron
                 double px_rec = Pion.Vector.Px();
                 double py_rec = Pion.Vector.Py();
                 double pz_rec = Pion.Vector.Pz();
-                
+
                 double px_mc = MC_ev.Pion.Px();
                 double py_mc = MC_ev.Pion.Py();
                 double pz_mc = MC_ev.Pion.Pz();
 
-                Pion.Vector.SetXYZM(px_rec+smearing_factor*(px_rec-px_mc), py_rec+smearing_factor*(py_rec-py_mc), pz_rec+smearing_factor*(pz_rec-pz_mc), mpion);
+                Pion.Vector.SetXYZM(px_rec + smearing_factor * (px_rec - px_mc), py_rec + smearing_factor * (py_rec - py_mc), pz_rec + smearing_factor * (pz_rec - pz_mc), mpion);
         }
-
 
         void Get_Kinematics()
         {
