@@ -164,6 +164,7 @@ int analysis_Epip()
 		"PCAL_U_elec",
 		"PCAL_V_elec",
 		"PCAL_W_elec",
+		"angle_e_pion",
 
 		"evt_num",
 		"Q2_Gen",
@@ -467,6 +468,7 @@ int analysis_Epip()
 				outVars["PCAL_W_elec"] = ev.Electron.W_CALO(PCAL);
 				outVars["PCAL_energy_elec"] = ev.Electron.Energy(ECAL, PCAL);
 				outVars["ECIN_energy_elec"] = ev.Electron.Energy(ECAL, ECIN);
+				outVars["angle_e_pion"] = (Pion->Angle((Electron)->Vect()));
 
 				outVars["Q2_Gen"] = MC_ev.Q2_Gen;
 				outVars["W_Gen"] = MC_ev.W_Gen;
