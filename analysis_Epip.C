@@ -398,8 +398,8 @@ int analysis_Epip()
 			///////////////////////////////////////////
 			//If simulation, apply smearing
 			///////////////////////////////////////////
-			if (IsSimu)
-				ev.Apply_Mom_Smearing_Electron(MC_ev, smear_factor);
+			//if (IsSimu)
+			//	ev.Apply_Mom_Smearing_Electron(MC_ev, smear_factor);
 			///////////////////////////////////////////
 
 			///////////////////////////////////////////
@@ -410,8 +410,8 @@ int analysis_Epip()
 			ev.Set_Nphe_HTCC();
 			if (DC_Traj_check)
 				ev.Associate_DC_traj(TRAJ);
-			if (!IsSimu)
-				ev.Apply_Mom_Correction(inbending);
+			//if (!IsSimu)
+			//	ev.Apply_Mom_Correction(inbending);
 			///////////////////////////////////////////
 
 			///////////////////////////////////////////
